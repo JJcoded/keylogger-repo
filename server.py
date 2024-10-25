@@ -1,7 +1,8 @@
-import http.server, os
+import http.server
+import os
 
-HOST_NAME = "192.168.15.16" 
-PORT_NUMBER = 5000
+HOST_NAME = "192.168.15.16"  # Server IP
+PORT_NUMBER = 5000  # Server Port
 
 class HTTPHandler(http.server.BaseHTTPRequestHandler):
     
@@ -23,6 +24,8 @@ if __name__ == '__main__':
     server_class = http.server.HTTPServer
     httpd = server_class((HOST_NAME, PORT_NUMBER), HTTPHandler)
     try:
+        print(f"[*] Starting server on {HOST_NAME}:{PORT_NUMBER}")
         httpd.serve_forever()
     except KeyboardInterrupt:
         print('[-] Server Terminated')
+        httpd.server_close()
