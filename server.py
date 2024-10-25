@@ -22,10 +22,17 @@ class HTTPHandler(http.server.BaseHTTPRequestHandler):
         print(f'[Client Response] {post_data.decode()}')
 
 if __name__ == '__main__':
+    server_class = http.server.HTTPServer
+
+    # Create the server object
+    httpd = server_class((HOST_NAME, PORT_NUMBER), HTTPHandler)
+    
+    # Enable SO_REUSEADDR to prevent the address already in use issue
+    httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    
+    print(f'[Server] Starting server at {HOST_NAME}:{PORT_NUMBER}')
+    
     try:
-        server_class = http.server.HTTPServer
-        httpd = server_class((HOST_NAME, PORT_NUMBER), HTTPHandler)
-        print(f'[Server] Starting server at {HOST_NAME}:{PORT_NUMBER}')
         httpd.serve_forever()
     except OSError as e:
         print(f'[Server Error] {e}')
