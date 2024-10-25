@@ -1,8 +1,8 @@
 import http.server
 import socket
 
-HOST_NAME = "192.168.15.16"  # Server IP
-PORT_NUMBER = 6969  # Change to port 6969
+HOST_NAME = "192.168.15.16"  # Your WiFi IP
+PORT_NUMBER = 6969  # Changed port to 6969
 
 class HTTPHandler(http.server.BaseHTTPRequestHandler):
     
@@ -30,6 +30,11 @@ if __name__ == '__main__':
     httpd = server_class((HOST_NAME, PORT_NUMBER), HTTPHandler)
 
     try:
+        # Check if the server is reachable and binding correctly
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.bind((HOST_NAME, PORT_NUMBER))
+            print(f'[Server] Successfully bound to {HOST_NAME}:{PORT_NUMBER}')
+
         print(f'[Server] Starting server at {HOST_NAME}:{PORT_NUMBER}')
         httpd.serve_forever()
     except OSError as e:
