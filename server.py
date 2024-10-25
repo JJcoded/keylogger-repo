@@ -2,7 +2,7 @@ import http.server
 import socket
 
 HOST_NAME = "192.168.15.16"  # Your WiFi IP
-PORT_NUMBER = 6969  # Changed port to 6969
+PORT_NUMBER = 8080  # Changed port to 8080
 
 class HTTPHandler(http.server.BaseHTTPRequestHandler):
     
