@@ -2,7 +2,7 @@ import http.server
 import socket
 
 HOST_NAME = "192.168.15.16"  # Server IP
-PORT_NUMBER = 5000  # Server Port
+PORT_NUMBER = 6969  # Server Port
 
 class HTTPHandler(http.server.BaseHTTPRequestHandler):
     
