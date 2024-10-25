@@ -1,4 +1,5 @@
 import http.server
+import socket
 
 HOST_NAME = "192.168.15.16"  # Server IP
 PORT_NUMBER = 5000  # Server Port
@@ -27,9 +28,17 @@ class HTTPHandler(http.server.BaseHTTPRequestHandler):
 if __name__ == '__main__':
     server_class = http.server.HTTPServer
     httpd = server_class((HOST_NAME, PORT_NUMBER), HTTPHandler)
-    print(f'[Server] Starting server at {HOST_NAME}:{PORT_NUMBER}')
+
     try:
+        # Check if the server is reachable and binding correctly
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.bind((HOST_NAME, PORT_NUMBER))
+            print(f'[Server] Successfully bound to {HOST_NAME}:{PORT_NUMBER}')
+
+        print(f'[Server] Starting server at {HOST_NAME}:{PORT_NUMBER}')
         httpd.serve_forever()
+    except OSError as e:
+        print(f'[Server Error] {e}')
     except KeyboardInterrupt:
         print('\n[Server] Server terminated.')
         httpd.server_close()
