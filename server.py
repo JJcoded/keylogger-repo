@@ -1,6 +1,6 @@
 import http.server, os
 
-HOST_NAME = "192.168.56.1" 
+HOST_NAME = "192.168.15.16" 
 PORT_NUMBER = 5000
 
 class HTTPHandler(http.server.BaseHTTPRequestHandler):
